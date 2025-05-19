@@ -23,29 +23,26 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-      
 
-      - name: Copy static files
+      # ✅ Prepare deploy folder
+      - name: Prepare deploy folder
         run: |
-            mkdir -p ./.next/standalone/static/_next/static/css
-            cp -R ./.next/static/css ./.next/standalone/static/_next/static
-            cp -R ./.next/static/chunks ./.next/standalone/static/_next/static
-            cp -R ./.next/static/media ./.next/standalone/static/_next/static
-            cp -R ./public ./.next/standalone/public
-            cp -R ./.next/static/* ./.next/standalone/static/_next/static
-  
-      - name: List build directory contents
-        run: ls -la .next/standalone # List the standalone folder to check the build output
-  
+          mkdir -p deploy
+          cp -r .next/standalone/* deploy/
+          cp -r .next/static deploy/.next/static
+          cp -r public deploy/public
+          cp package.json deploy/
+
+      - name: List deploy directory
+        run: ls -R deploy
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-            name: nextjs-build
-            path: |
-              .next/standalone
-              .next/static
-            include-hidden-files: true
-            if-no-files-found: warn
+          name: nextjs-build
+          path: deploy
+          include-hidden-files: true
+          if-no-files-found: warn
 
   deploy:
     runs-on: ubuntu-latest
@@ -54,15 +51,16 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write
       contents: read
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: nextjs-build
-          path: ./    
-          
+          path: ./
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -70,11 +68,10 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_23CB4A58512348B99538B2F57ECAB9C8 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_3575A66AC1414A9BB9E61CF14A35A955 }}
 
-      - name: 'Deploy to Azure Web App'
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'Venkatraman-dev'
           slot-name: 'Production'
           package: .
-          
