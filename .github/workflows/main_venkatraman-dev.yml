@@ -11,44 +11,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: 🧱 Setup Node.js
+      - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      - name: 📦 Install dependencies and build
+      - name: npm install, build, and test
         run: |
           npm install
-          npm run build
+          npm run build --if-present
+          npm run test --if-present
+      
 
-      - name: 📁 Prepare deploy folder
+      - name: Copy static files
         run: |
-          mkdir -p deploy/.next
-          cp -r .next/standalone/* deploy/
-
-          
-          
-          if [ -d ".next/static" ]; then
-          mkdir -p deploy/.next/static
-          cp -r .next/static/* deploy/.next/static
-          fi
-
-          if [ -d "public" ]; then
-            cp -r public deploy/public
-          fi
-
-          cp package.json deploy/
-
-      - name: 📦 Upload deploy artifact
+            mkdir -p ./.next/standalone/static/_next/static/css
+            cp -R ./.next/static/css ./.next/standalone/static/_next/static
+            cp -R ./.next/static/chunks ./.next/standalone/static/_next/static
+            cp -R ./.next/static/media ./.next/standalone/static/_next/static
+            cp -R ./public ./.next/standalone/public
+            cp -R ./.next/static/* ./.next/standalone/static/_next/static
+  
+      - name: List build directory contents
+        run: ls -la .next/standalone # List the standalone folder to check the build output
+  
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: nextjs-deploy
-          path: deploy
-          if-no-files-found: error
-          include-hidden-files: true
+            name: nextjs-build
+            path: |
+              .next/standalone
+              .next/static
+            include-hidden-files: true
+            if-no-files-found: warn
 
   deploy:
     runs-on: ubuntu-latest
@@ -56,19 +53,17 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
     permissions:
-      id-token: write
+      id-token: write #This is required for requesting the JWT
       contents: read
-
     steps:
-      - name: 📥 Download build artifact
+      - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: nextjs-deploy
-          path: .
-
-      - name: 🔐 Azure Login
+          name: nextjs-build
+          path: ./    
+          
+      - name: Login to Azure
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_018B5B2DC08F42DC9F9DA1C1ECC552D7 }}
