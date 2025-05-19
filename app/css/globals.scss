@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: rgb(211, 216, 232);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background-color: whitesmoke;
+}
+
+#sticky-card-1 {
+  --index: 1;
+}
+
+#sticky-card-2 {
+  --index: 2;
+}
+
+#sticky-card-3 {
+  --index: 3;
+}
+
+#sticky-card-4 {
+  --index: 4;
+}
+
+/* Global CSS or Tailwind Styles */
+.video-card {
+  background-color: #000000; /* dark background for the card */
+  transition: all 0.3s ease-in-out;
+  transform: scale(1);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.video-card:hover {
+  transform: scale(1.05); /* Slightly increase size on hover */
+  box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+}
+
+button {
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #4c6ef5; /* Highlight on hover for the buttons */
+  transform: scale(1.05); /* Slight button scale on hover */
+}
+
+.sticky-card {
+  // padding-top: calc(var(--index) * 2.5rem);
+  top: calc(var(--index) * 4rem);
+}
