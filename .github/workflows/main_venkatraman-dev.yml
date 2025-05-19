@@ -79,4 +79,3 @@ jobs:
           app-name: 'Venkatraman-dev'
           slot-name: 'Production'
           package: .
-Fix3
