@@ -9,8 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
@@ -25,15 +23,29 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
+      
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
-
-      - name: Upload artifact for deployment job
+      - name: Copy static files
+        run: |
+            mkdir -p ./.next/standalone/static/_next/static/css
+            cp -R ./.next/static/css ./.next/standalone/static/_next/static
+            cp -R ./.next/static/chunks ./.next/standalone/static/_next/static
+            cp -R ./.next/static/media ./.next/standalone/static/_next/static
+            cp -R ./public ./.next/standalone/public
+            cp -R ./.next/static/* ./.next/standalone/static/_next/static
+  
+      - name: List build directory contents
+        run: ls -la .next/standalone # List the standalone folder to check the build output
+  
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
-          path: release.zip
+            name: nextjs-build
+            path: |
+              .next/standalone
+              .next/static
+            include-hidden-files: true
+            if-no-files-found: warn
 
   deploy:
     runs-on: ubuntu-latest
@@ -43,18 +55,14 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-
+      contents: read
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: node-app
-          path: .
-
-      # - name: Unzip artifact for deployment
-      #   run: unzip release.zip
-      
+          name: nextjs-build
+          path: ./    
+          
       - name: Login to Azure
         uses: azure/login@v2
         with:
