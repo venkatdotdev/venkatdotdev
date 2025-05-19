@@ -28,9 +28,12 @@ jobs:
         run: |
           mkdir -p deploy/.next
           cp -r .next/standalone/* deploy/
+
+          
           
           if [ -d ".next/static" ]; then
-            cp -r .next/static deploy/.next/static
+          mkdir -p deploy/.next/static
+          cp -r .next/static/* deploy/.next/static
           fi
 
           if [ -d "public" ]; then
