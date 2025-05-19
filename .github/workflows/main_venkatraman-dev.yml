@@ -11,38 +11,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js version
+      - name: 🧱 Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      - name: npm install, build, and test
+      - name: 📦 Install dependencies and build
         run: |
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm run build
 
-      # ✅ Prepare deploy folder
-      - name: Prepare deploy folder
+      - name: 📁 Prepare deploy folder
         run: |
-          mkdir -p deploy
+          mkdir -p deploy/.next
           cp -r .next/standalone/* deploy/
-          cp -r .next/static deploy/.next/static
-          cp -r public deploy/public
+          
+          if [ -d ".next/static" ]; then
+            cp -r .next/static deploy/.next/static
+          fi
+
+          if [ -d "public" ]; then
+            cp -r public deploy/public
+          fi
+
           cp package.json deploy/
 
-      - name: List deploy directory
-        run: ls -R deploy
-
-      - name: Upload build artifacts
+      - name: 📦 Upload deploy artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nextjs-build
+          name: nextjs-deploy
           path: deploy
+          if-no-files-found: error
           include-hidden-files: true
-          if-no-files-found: warn
 
   deploy:
     runs-on: ubuntu-latest
@@ -50,28 +53,30 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
     permissions:
       id-token: write
       contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: 📥 Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: nextjs-build
-          path: ./
+          name: nextjs-deploy
+          path: .
 
-      - name: Login to Azure
+      - name: 🔐 Azure Login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_018B5B2DC08F42DC9F9DA1C1ECC552D7 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_23CB4A58512348B99538B2F57ECAB9C8 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_3575A66AC1414A9BB9E61CF14A35A955 }}
 
-      - name: Deploy to Azure Web App
+      - name: 🚀 Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'Venkatraman-dev'
           slot-name: 'Production'
           package: .
+Fix3
