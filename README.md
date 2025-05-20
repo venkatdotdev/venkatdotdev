@@ -1,4 +1,4 @@
-# 👋 Hello! I'm Venkat Raman Nagarajan
+# 👋 Hello! I'm Venkatraman Nagarajan
 
 ## 🧘 Motto  
 > One step at a time. Always forward.
