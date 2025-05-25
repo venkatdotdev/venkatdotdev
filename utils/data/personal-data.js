@@ -24,5 +24,4 @@ export const personalData = {
   website: "https://venkatraman-nagarajan.vercel.app/",
   blog: "https://venkatraman-nagarajan.vercel.app/blog",
   portfolio: "https://venkatraman-nagarajan.vercel.app/",
-  resume: "https://drive.google.com/file/d/1mok3fS8xlHDKzFHDs-e9RvzCplpQ1ZEp/view?usp=sharing"
-}
+  resume: "https://drive.google.com/file/d/1SWPog5ZZoiKPEm-RwsMcDndXYJLfY5rw/view?usp=sharing"
