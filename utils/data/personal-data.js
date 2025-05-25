@@ -25,3 +25,4 @@ export const personalData = {
   blog: "https://venkatraman-nagarajan.vercel.app/blog",
   portfolio: "https://venkatraman-nagarajan.vercel.app/",
   resume: "https://drive.google.com/file/d/1SWPog5ZZoiKPEm-RwsMcDndXYJLfY5rw/view?usp=sharing"
+}
