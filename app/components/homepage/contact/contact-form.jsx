@@ -36,7 +36,7 @@ function ContactForm() {
     try {
       setIsLoading(true);
       const res = await axios.post(
-        `$/api/contact`,
+        `/api/contact`,
         userInput
       );
 
