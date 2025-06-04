@@ -35,6 +35,11 @@ module.exports = {
         hostname: 'media2.dev.to',
         pathname: '**',
       },
+      {
+      protocol: 'https',
+      hostname: 'cryptexblobs.blob.core.windows.net',
+      pathname: '**',
+    },
     ],
   },
 }
