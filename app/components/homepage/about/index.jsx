@@ -28,7 +28,7 @@ function AboutSection() {
         </div>
         <div className="flex justify-center order-1 lg:order-2">
           <Image
-            src={personalData.profile}
+            src="https://cryptexblobs.blob.core.windows.net/venkat/08.jpg"
             width={370}
             height={300}
             alt="VENKATRAMAN NAGARAJAN"
