@@ -6,7 +6,7 @@
 ---
 
 ### 📊 GitHub Stats  
-![Venkat's GitHub Stats](https://github-readme-stats.vercel.app/api?username=VenkatASE&show_icons=true&theme=tokyonight&count_private=true)
+![Venkat's GitHub Stats](https://github-readme-stats.vercel.app/api?username=venkatdotdev&show_icons=true&theme=tokyonight&count_private=true)
 
 ---
 
