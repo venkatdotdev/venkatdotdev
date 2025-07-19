@@ -69,7 +69,7 @@
 
 ## 📌 Pinned Projects
 - 🔹 [Portfolio Website](https://github.com/venkatdotdev/venkatdotdev) – Modern Next.js & Tailwind portfolio
-- 🔹 [Inventory API](https://github.com/venkatdotdev/inventory-api) – Node.js & Prisma backend for product tracking
+
 
 ---
 
