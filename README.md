@@ -74,7 +74,7 @@
 ---
 
 ### 📈 Contributions
-[![GitHub Streak](https://streak-stats.demolab.com?user=VenkatASE&theme=tokyonight)](https://git.io/streak-stats)
+[![GitHub Streak](https://streak-stats.demolab.com?user=venkstdotdev&theme=tokyonight)](https://git.io/streak-stats)
 
 ---
 
