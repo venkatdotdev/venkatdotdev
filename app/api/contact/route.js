@@ -2,15 +2,19 @@ import axios from 'axios';
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+if (!process.env.EMAIL_ADDRESS || !process.env.GMAIL_PASSKEY) {
+  console.error('Missing required environment variables: EMAIL_ADDRESS and GMAIL_PASSKEY must be set.');
+}
+
 // Create and configure Nodemailer transporter
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
   port: 587,
-  secure: false, 
+  secure: false,
   auth: {
-    user: process.env.EMAIL_ADDRESS||'venkatdotdev@gmail.com',
-    pass: process.env.GMAIL_PASSKEY||'Vendep223@01', 
+    user: process.env.EMAIL_ADDRESS,
+    pass: process.env.GMAIL_PASSKEY,
   },
 });
 
@@ -74,18 +78,13 @@ export async function POST(request) {
     const token = process.env.TELEGRAM_BOT_TOKEN;
     const chat_id = process.env.TELEGRAM_CHAT_ID;
 
-    // Validate environment variables
-    if (!token || !chat_id) {
-      return NextResponse.json({
-        success: false,
-        message: 'Telegram token or chat ID is missing.',
-      }, { status: 400 });
-    }
-
     const message = `New message from ${name}\n\nEmail: ${email}\n\nMessage:\n\n${userMessage}\n\n`;
 
-    // Send Telegram message
-    //const telegramSuccess = await sendTelegramMessage(token, chat_id, message);
+    // Send Telegram message if configured
+    let telegramSuccess = true;
+    if (token && chat_id) {
+      telegramSuccess = await sendTelegramMessage(token, chat_id, message);
+    }
 
     // Send email
     const emailSuccess = await sendEmail(payload, message);
