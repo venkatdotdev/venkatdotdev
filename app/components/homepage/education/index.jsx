@@ -1,100 +1,82 @@
-// @flow strict
+"use client";
 import { educations } from "@/utils/data/educations";
 import Image from "next/image";
-import { BsPersonWorkspace } from "react-icons/bs";
-import lottieFile from '../../../assets/lottie/study.json';
-import AnimationLottie from "../../helper/animation-lottie";
-import GlowCard from "../../helper/glow-card";
+import { BsCalendar3, BsMortarboardFill } from "react-icons/bs";
+import { MdVerified } from "react-icons/md";
+
+const degreeColors = [
+  { accent: 'from-[#054bad] to-violet-500', badge: 'bg-violet-50 text-violet-700 border-violet-200', gpaColor: 'text-[#054bad]' },
+  { accent: 'from-teal-500 to-[#008080]',   badge: 'bg-teal-50  text-teal-700  border-teal-200',   gpaColor: 'text-teal-600'   },
+];
 
 function Education() {
   return (
-    <div id="education" className="relative z-50 border-t my-12 lg:my-24 border-[#25213b]">
-      <Image
-        src="/section.svg"
-        alt="Hero"
-        width={1572}
-        height={795}
-        className="absolute top-0 -z-10"
-      />
-      <div className="flex justify-center -translate-y-[1px]">
-        <div className="w-3/4">
-          <div className="h-[1px] bg-gradient-to-r from-transparent via-violet-500 to-transparent  w-full" />
-        </div>
+    <div id="education" className="relative z-50 my-12 lg:my-24">
+      <div className="flex items-center gap-4 mb-10">
+        <span className="bg-[#0f1117] w-fit text-white px-5 py-3 text-xl font-bold rounded-md tracking-wide font-mono">
+          &gt; EDUCATION
+        </span>
+        <span className="flex-1 h-[2px] bg-gradient-to-r from-[#054bad]/50 to-transparent" />
       </div>
 
-      <div className="flex justify-center my-5 lg:py-8">
-        <div className="flex  items-center">
-          <span className="w-24 h-[2px] bg-[#2F2F2F]"></span>
-          <span className="bg-[#2F2F2F] w-fit text-amber p-2 px-5 text-xl rounded-md">
-            Education
-          </span>
-          <span className="w-24 h-[2px] bg-[#2F2F2F]"></span>
-        </div>
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {educations.map((edu, index) => {
+          const c = degreeColors[index % degreeColors.length];
+          return (
+            <div key={edu.id}
+              className="rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group">
 
-      <div className="py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
-          <div className="flex justify-center items-start">
-            <div className="w-3/4 h-3/4">
-              <AnimationLottie animationPath={lottieFile} />
-            </div>
-          </div>
-          <div>
-            <div className="flex flex-col gap-6">
-              {
-                educations.map(education => (
-                  <GlowCard key={education.id} identifier={`education-${education.id}`}>
-                    <div className="p-3 relative">
-                      <Image
-                        src="/blur-23.svg"
-                        alt="Hero"
-                        width={1080}
-                        height={200}
-                        className="absolute bottom-0 opacity-80"
-                      />
-                      <div className="flex justify-center">
-                        <p className="text-xl font-bold text-[#fff] ">
-                          {education.duration}
-                        </p>
-                      </div>
+              {/* Gradient top bar */}
+              <div className={`h-1.5 w-full bg-gradient-to-r ${c.accent}`} />
 
-                      {/* Flex container for the icon, title, and company */}
-                      <div className="flex items-center gap-x-8 px-3 py-5">
-                        {/* Icon and Text Container */}
-                        <div className="flex items-center gap-x-4">
-                          <div className="text-[#ffbf00] transition-all duration-300 hover:scale-125">
-                            <BsPersonWorkspace size={36} />
-                          </div>
-                          <div>
-                          <p className="text-[#4beba0] sm:text-xl mb-2 font-medium uppercase">
-                            {education.title}
-                          </p>
-                          <p className="text-sm sm:text-base">{education.institution}</p>
-                          <p className="text-md sm:text-base  text-[#ffbf00] ">{education.gpa}</p>
-                          </div>
-                        </div>
+              <div className="p-6">
+                {/* Duration pill */}
+                <div className="flex items-center justify-between mb-4">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-mono text-gray-500 bg-gray-50 border border-gray-200 rounded-full px-3 py-1">
+                    <BsCalendar3 size={10} />
+                    {edu.duration}
+                  </span>
+                  <MdVerified size={18} className="text-gray-300 group-hover:text-[#054bad] transition-colors duration-300" />
+                </div>
 
-                        {/* Image Div pushed to the extreme right */}
-                        <div className="ml-auto w-1/3 flex justify-end">
-                          <Image
-                            src={education.image} // Add an image path in your experience data
-                            alt="Experience Image"
-                            width={150}
-                            height={150}
-                            className="rounded-md object-cover"
-                          />
-                        </div>
-                      </div>
+                {/* Degree + institution row */}
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <BsMortarboardFill size={16} className="text-[#054bad] shrink-0" />
+                      <span className={`text-[11px] font-semibold uppercase tracking-wider border px-2 py-0.5 rounded-full ${c.badge}`}>
+                        {index === 0 ? 'Post Graduate' : 'Under Graduate'}
+                      </span>
                     </div>
-                  </GlowCard>
-                ))
-              }
+                    <h3 className="text-base font-extrabold text-gray-900 leading-snug mb-1">
+                      {edu.title}
+                    </h3>
+                    <p className="text-sm text-gray-500 leading-snug mb-3">
+                      {edu.institution}
+                    </p>
+                    <p className={`text-sm font-bold ${c.gpaColor}`}>
+                      {edu.gpa}
+                    </p>
+                  </div>
+
+                  {/* University logo */}
+                  <div className="shrink-0 h-20 w-20 rounded-xl border border-gray-100 bg-gray-50 flex items-center justify-center overflow-hidden p-1">
+                    <Image
+                      src={edu.image}
+                      alt={edu.institution}
+                      width={72}
+                      height={72}
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
     </div>
   );
-};
+}
 
 export default Education;
