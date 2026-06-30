@@ -75,11 +75,11 @@ function HeroSection() {
               <RiContactsFill size={16} />
               <span>Contact Me</span>
             </Link>
-            <Link href={personalData.resume} target="_blank"
+            <a href={personalData.resume} download="Venkatraman_Nagarajan_Resume.pdf"
               className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-[#054bad] rounded-full text-[#054bad] text-sm font-semibold hover:bg-blue-50 transition-all duration-300">
               <MdDownload size={16} />
               <span>Resume</span>
-            </Link>
+            </a>
           </div>
         </div>
 

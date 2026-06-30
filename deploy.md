@@ -251,7 +251,7 @@ Visit `http://yourdomain.com` — your portfolio should load.
 apt install -y certbot python3-certbot-nginx
 
 # Issue SSL certificate (replace with your real domain)
-certbot --nginx -d yourdomain.com -d www.yourdomain.com
+certbot --nginx -d venkatdotdev.com -d www.venkatdotdev.com
 ```
 
 **Follow the prompts:**
@@ -289,7 +289,7 @@ npm run build
 pm2 restart portfolio
 ```
 
-Your site is now live at `https://yourdomain.com`
+Your site is now live at `https://venkatdotdev.com`
 
 ---
 
