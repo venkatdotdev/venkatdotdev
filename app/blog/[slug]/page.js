@@ -16,7 +16,7 @@ export default function BlogPost({ params }) {
   const blog = blogs.find((b) => b.slug === params.slug);
   if (!blog) notFound();
 
-  const postUrl = `https://venkatraman-nagarajan.vercel.app/blog/${blog.slug}`;
+  const postUrl = `https://venkatdotdev.com/blog/${blog.slug}`;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
