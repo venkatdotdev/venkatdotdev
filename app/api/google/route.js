@@ -1,25 +1,32 @@
-import axios from "axios";
 import { NextResponse } from "next/server";
+import { isRateLimited } from "@/utils/rate-limit";
+import { verifyRecaptcha } from "@/utils/verify-recaptcha";
 
 export async function POST(request) {
-  const reqBody = await request.json();
-  const secret_key = process.env.NEXT_PUBLIC_RECAPTCHA_SECRET_KEY;
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    request.headers.get('x-real-ip') ||
+    'unknown';
+
+  if (isRateLimited(`recaptcha:${ip}`, 10, 10 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many requests.", success: false }, { status: 429 });
+  }
 
   try {
-    const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secret_key}&response=${reqBody.token}`;
+    const reqBody = await request.json();
+    const success = await verifyRecaptcha(reqBody.token);
 
-    const res = await axios.post(url);
-    if (res.data.success) {
+    if (success) {
       return NextResponse.json({
         message: "Captcha verification success!!",
         success: true,
-      })
+      });
     };
 
     return NextResponse.json({
       error: "Captcha verification failed!",
       success: false,
-    }, { status: 500 });
+    }, { status: 400 });
   } catch (error) {
     return NextResponse.json({
       error: "Captcha verification failed!",

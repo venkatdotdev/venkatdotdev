@@ -90,7 +90,14 @@ EMAIL_ADDRESS=your-gmail@gmail.com
 GMAIL_PASSKEY=xxxx xxxx xxxx xxxx
 NEXT_PUBLIC_APP_URL=https://yourdomain.com
 NEXT_PUBLIC_GTM=G-XXXXXXXXXX
-NEXT_PUBLIC_RECAPTCHA_SECRET_KEY=your_recaptcha_secret
+
+# Optional - contact form captcha (falls back to honeypot + rate limiting if unset)
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
+RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
+
+# Optional - required to unlock /admin/* (404s if either is unset)
+ADMIN_USER=your_admin_username
+ADMIN_PASSWORD=your_admin_password
 ```
 
 Save: `Ctrl+O` → `Enter` → `Ctrl+X`

@@ -2,9 +2,12 @@
 // @flow strict
 import { isValidEmail } from "@/utils/check-email";
 import axios from "axios";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { TbMailForward } from "react-icons/tb";
 import { toast } from "react-toastify";
+
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
 function ContactForm() {
   const [error, setError] = useState({ email: false, required: false });
@@ -13,7 +16,10 @@ function ContactForm() {
     name: "",
     email: "",
     message: "",
+    website: "", // honeypot - real users never fill this
   });
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const recaptchaRef = useRef(null);
 
   const checkRequired = () => {
     if (userInput.email && userInput.message && userInput.name) {
@@ -33,16 +39,24 @@ function ContactForm() {
       setError({ ...error, required: false });
     };
 
+    if (RECAPTCHA_SITE_KEY && !recaptchaToken) {
+      toast.error("Please verify you're not a robot.");
+      return;
+    }
+
     try {
       setIsLoading(true);
-      const res = await axios.post('/api/contact', userInput);
+      await axios.post('/api/contact', { ...userInput, recaptchaToken });
 
       toast.success("Message sent successfully!");
       setUserInput({
         name: "",
         email: "",
         message: "",
+        website: "",
       });
+      recaptchaRef.current?.reset();
+      setRecaptchaToken(null);
     } catch (error) {
       toast.error(error?.response?.data?.message);
     } finally {
@@ -56,6 +70,17 @@ function ContactForm() {
       <div className="max-w-3xl text-black bg-[#2F2F2F] rounded-lg border border-[#464c6a] p-3 lg:p-5">
         <p className="text-sm text-[#d3d8e8]">{"If you have any questions or concerns, please don't hesitate to contact me. I am open to any work opportunities that align with my skills and interests."}</p>
         <div className="mt-6 flex flex-col gap-4">
+          {/* Honeypot: hidden from real users, bots tend to fill every field */}
+          <input
+            type="text"
+            name="website"
+            value={userInput.website}
+            onChange={(e) => setUserInput({ ...userInput, website: e.target.value })}
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
+          />
           <div className="flex flex-col gap-2">
             <label className="text-base text-white"> Name: *</label>
             <input
@@ -99,6 +124,17 @@ function ContactForm() {
               value={userInput.message}
             />
           </div>
+          {RECAPTCHA_SITE_KEY && (
+            <div className="flex justify-center">
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={RECAPTCHA_SITE_KEY}
+                onChange={(token) => setRecaptchaToken(token)}
+                onExpired={() => setRecaptchaToken(null)}
+                theme="dark"
+              />
+            </div>
+          )}
           <div className="flex flex-col items-center gap-3">
             {error.required && <p className="text-sm text-red-400">
               All fields are required!

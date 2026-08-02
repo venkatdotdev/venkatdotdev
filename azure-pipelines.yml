@@ -23,10 +23,6 @@ steps:
       npm run build
     displayName: 'Install dependencies and build Next.js app'
 
-  - script: |
-      npm run export
-    displayName: 'Export static site (optional if using static export)'
-
   - task: AzureWebApp@1
     inputs:
       azureSubscription: 'azure-connection'
